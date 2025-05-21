@@ -84,12 +84,51 @@ def llenar_formulario(driver: WebDriver) -> None:
         "lastName": "Romero" ,
         "userEmail": "aromero@inter.edu.co",
         "userNumber": "1234567890",
-        "currentAddress" : "Calle # 40" ,
+        "currentAddress" : "Calle # 40 -34 Chapinero  " ,
+        # "uploadPicture": "/anderson/screenshot.png",
          
     }
     for key, value in campos_texto.items():
         llenar_texto_by_id(driver=driver, id_element=key , texto=value)
         sleep(1)
+
+def llenar_radio_check(driver: WebDriver, element_value: str) -> None:
+    radio_button: WebElement = driver.find_element(
+        By.XPATH, f'//label[contains(text(), "{element_value}")]'
+    )
+    scroll_to_element(drive=driver, elemet=radio_button)
+    radio_button.click()
+    sleep(1)
+
+
+
+
+def llenar_ciudad(driver: WebDriver, state: str, city: str ) -> None:
+    estado: WebElement = driver.find_element(By.ID, "state")
+    scroll_to_element(drive=driver, elemet=estado)
+    estado.click()
+
+    estado: WebElement = driver.find_element(
+        By.XPATH,
+         f'//div[contains(@id, "react-select-3-option-") and contains(text(), "{state}")]',
+    )
+    estado.click()
+
+    estado: WebElement = driver.find_element(By.ID,"city")
+    scroll_to_element(drive=driver , elemet=estado)
+    estado.click()
+    ciudad: WebElement = driver.find_element(
+        By.XPATH,
+        f'//div[contains(@id, "react-select-4-option-") and contains(text(), "{city}")]',
+    )
+    ciudad.click()
+
+
+def enviar_formulario(drive: WebDriver) -> None:
+    submit: WebElement = drive.find_element(By.ID, "submit")
+    scroll_to_element(drive=drive, elemet=submit)
+    submit.click() 
+
 
 def main()-> None:
     driver: WebDriver= get_driver(options=OPTIONS)
@@ -102,7 +141,12 @@ def main()-> None:
             texto=subject,
         )
     seleccionar_fecha(driver=driver)
+    llenar_radio_check(driver=driver , element_value="Male")
+    llenar_radio_check(driver=driver , element_value="Sports")
+    llenar_radio_check(driver=driver , element_value="Music")
+    llenar_ciudad(driver=driver, state="NCR", city="Delhi")
     sleep(3)
+    enviar_formulario(drive=driver)
     driver.save_screenshot("screenshot.png")
     driver.quit()   
 
